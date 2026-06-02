@@ -6,6 +6,8 @@ class Settings(BaseSettings):
     REDIS_URL: str
     ELASTICSEARCH_URL: str
     ELASTICSEARCH_INDEX: str
+    ELASTICSEARCH_USERNAME: str
+    ELASTICSEARCH_PASSWORD: str
     SECRET_KEY: str
     ALGORITHM: str
     CLOUDINARY_CLOUD_NAME: str

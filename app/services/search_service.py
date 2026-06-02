@@ -1,7 +1,14 @@
 from elasticsearch import Elasticsearch
 from app.core.config import settings
 
-es = Elasticsearch([settings.ELASTICSEARCH_URL])
+es = Elasticsearch(
+    [settings.ELASTICSEARCH_URL],
+    basic_auth=(settings.ELASTICSEARCH_USERNAME, settings.ELASTICSEARCH_PASSWORD),
+    request_timeout=30,
+    max_retries=10,
+    retry_on_timeout=True,
+    verify_certs=True,
+)
 
 def create_index_if_not_exists():
     """

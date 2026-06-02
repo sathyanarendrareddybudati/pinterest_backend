@@ -47,7 +47,13 @@ def get_feed(user_id: Optional[UUID] = Query(None), limit: int = Query(10), db: 
 
     if not recommended_ids:
         # Final fallback, recent pins
-        return db.query(Pin).order_by(Pin.created_at.desc()).limit(limit).all()
+        return (
+            db.query(Pin)
+            .filter(Pin.created_at.isnot(None))
+            .order_by(Pin.created_at.desc())
+            .limit(limit)
+            .all()
+        )
 
     pins = (
         db.query(Pin)
@@ -63,10 +69,22 @@ def trending_feed(limit: int = Query(10), db: Session = Depends(get_db)):
     """
     trending_ids = _valid_uuid_list(get_trending_pins(limit))
     if not trending_ids:
-        return db.query(Pin).order_by(Pin.created_at.desc()).limit(limit).all()
+        return (
+            db.query(Pin)
+            .filter(Pin.created_at.isnot(None))
+            .order_by(Pin.created_at.desc())
+            .limit(limit)
+            .all()
+        )
     pins = (
         db.query(Pin).filter(Pin.id.in_(trending_ids), Pin.created_at.isnot(None)).all()
     )
     if not pins:
-        return db.query(Pin).order_by(Pin.created_at.desc()).limit(limit).all()
+        return (
+            db.query(Pin)
+            .filter(Pin.created_at.isnot(None))
+            .order_by(Pin.created_at.desc())
+            .limit(limit)
+            .all()
+        )
     return pins
