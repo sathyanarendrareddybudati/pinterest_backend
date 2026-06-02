@@ -5,7 +5,6 @@ from app.models.models import Pin
 from app.schemas.schemas import PinResponse
 from typing import List, Optional
 from app.services.search_service import search_pins
-from app.services.visual_search import visual_search
 
 router = APIRouter()
 
@@ -56,6 +55,7 @@ async def visual_search_endpoint(
             status_code=400, detail="Uploaded file is not a valid image."
         )
 
+    from app.services.visual_search import visual_search
     query_vector = visual_search.encode_image(image_bytes)
 
     # Hybrid search (vector only here)
