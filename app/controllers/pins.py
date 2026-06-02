@@ -125,6 +125,11 @@ async def create_pin(
     db.commit()
     db.refresh(new_pin)
 
+    if not new_pin.created_at:
+        from datetime import datetime
+
+        new_pin.created_at = datetime.utcnow()
+
     # Save ImageMetadata
     metadata = ImageMetadata(
         pin_id=new_pin.id,
