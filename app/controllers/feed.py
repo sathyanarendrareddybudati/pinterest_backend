@@ -10,6 +10,18 @@ from app.services.trending import get_trending_pins
 
 router = APIRouter()
 
+
+def _valid_uuid_list(ids):
+    valid_ids = []
+    for value in ids:
+        try:
+            UUID(str(value))
+            valid_ids.append(value)
+        except (ValueError, TypeError):
+            continue
+    return valid_ids
+
+
 def train_model_task(db: Session):
     recommender.train(db)
 
@@ -27,15 +39,15 @@ def get_feed(user_id: Optional[UUID] = Query(None), limit: int = Query(10), db: 
     recommended_ids = []
     if user_id:
         recommended_ids = recommender.recommend(user_id, num_items=limit)
-        
+
     if not recommended_ids:
         # Fallback to trending
-        recommended_ids = get_trending_pins(limit)
-        
+        recommended_ids = _valid_uuid_list(get_trending_pins(limit))
+
     if not recommended_ids:
         # Final fallback, recent pins
         return db.query(Pin).order_by(Pin.created_at.desc()).limit(limit).all()
-        
+
     pins = db.query(Pin).filter(Pin.id.in_(recommended_ids)).all()
     return pins
 
@@ -44,7 +56,7 @@ def trending_feed(limit: int = Query(10), db: Session = Depends(get_db)):
     """
     Returns real-time trending pins via Redis sorted sets.
     """
-    trending_ids = get_trending_pins(limit)
+    trending_ids = _valid_uuid_list(get_trending_pins(limit))
     if not trending_ids:
         return db.query(Pin).order_by(Pin.created_at.desc()).limit(limit).all()
     pins = db.query(Pin).filter(Pin.id.in_(trending_ids)).all()
