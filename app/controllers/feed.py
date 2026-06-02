@@ -15,9 +15,9 @@ def _valid_uuid_list(ids):
     valid_ids = []
     for value in ids:
         try:
-            UUID(str(value))
-            print(f"Valid UUID: {value}")
-            valid_ids.append(value)
+            uuid_obj = UUID(str(value))
+            print(f"Valid UUID: {uuid_obj}")
+            valid_ids.append(uuid_obj)
         except (ValueError, TypeError):
             continue
     return valid_ids

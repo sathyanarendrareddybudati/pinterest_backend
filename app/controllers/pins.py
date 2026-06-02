@@ -42,7 +42,7 @@ def get_current_user(
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Could not validate credentials")
 
-    user = db.query(User).filter(User.id == user_id).first()
+    user = db.query(User).filter(User.id == UUID(user_id)).first()
     if not user:
         raise HTTPException(status_code=401, detail="User not found")
     return user

@@ -16,3 +16,6 @@ Pillow
 scikit-learn
 numpy
 implicit
+cloudinary
+blurhash
+scipy

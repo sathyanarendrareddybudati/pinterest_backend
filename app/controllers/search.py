@@ -21,7 +21,15 @@ def search(
     if not pin_ids:
         return []
 
-    pins = db.query(Pin).filter(Pin.id.in_(pin_ids)).all()
+    from uuid import UUID
+    valid_ids = []
+    for pid in pin_ids:
+        try:
+            valid_ids.append(UUID(str(pid)))
+        except (ValueError, TypeError):
+            continue
+
+    pins = db.query(Pin).filter(Pin.id.in_(valid_ids)).all()
     return pins
 
 
@@ -55,5 +63,14 @@ async def visual_search_endpoint(
 
     if not pin_ids:
         return []
-    pins = db.query(Pin).filter(Pin.id.in_(pin_ids)).all()
+
+    from uuid import UUID
+    valid_ids = []
+    for pid in pin_ids:
+        try:
+            valid_ids.append(UUID(str(pid)))
+        except (ValueError, TypeError):
+            continue
+
+    pins = db.query(Pin).filter(Pin.id.in_(valid_ids)).all()
     return pins
